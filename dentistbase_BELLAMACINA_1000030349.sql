@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:4306
--- Creato il: Feb 17, 2023 alle 15:10
+-- Creato il: Feb 20, 2023 alle 12:41
 -- Versione del server: 10.4.25-MariaDB
 -- Versione PHP: 8.1.10
 
@@ -119,19 +119,19 @@ CREATE DEFINER=`root`@`localhost` FUNCTION `findAssistente` (`CodicePrestazione`
 	DECLARE ass int(8);
     SET lc_time_names = 'it_IT';
 	SELECT ID INTO ass
-    FROM assistenti, abilitazioni
-   	WHERE CodicePrestazione=Abilitazione
- 	AND ID=ID_Personale
-	AND NOT EXISTS (SELECT *
-		FROM pp
-		WHERE ID=Assistente
-		AND ABS(TIMEDIFF(Data, DataOra))<10000)
-    AND EXISTS (SELECT *
+        	FROM assistenti, abilitazioni
+       		WHERE CodicePrestazione=Abilitazione
+        	AND ID=ID_Personale
+		AND NOT EXISTS (SELECT *
+			FROM pp
+			WHERE ID=Assistente
+			AND ABS(TIMEDIFF(Data, DataOra))<10000)
+            AND EXISTS (SELECT *
                 FROM turni
                 WHERE turni.ID_Personale=assistenti.ID
                 AND Giorno=DAYNAME(DataOra))
- 	ORDER BY RAND()
-   	LIMIT 1;
+     ORDER BY RAND()
+     LIMIT 1;
 	RETURN ass;
 END$$
 
@@ -224,7 +224,6 @@ DELIMITER ;
 -- Struttura della tabella `abilitazioni`
 --
 -- Creazione: Feb 16, 2023 alle 10:15
--- Ultimo aggiornamento: Feb 17, 2023 alle 12:23
 --
 
 DROP TABLE IF EXISTS `abilitazioni`;
@@ -369,7 +368,6 @@ CREATE TABLE IF NOT EXISTS `controlli` (
 -- Struttura della tabella `listaprestazioni`
 --
 -- Creazione: Feb 16, 2023 alle 10:15
--- Ultimo aggiornamento: Feb 17, 2023 alle 11:46
 --
 
 DROP TABLE IF EXISTS `listaprestazioni`;
@@ -441,7 +439,6 @@ DELIMITER ;
 -- Struttura della tabella `pazienti`
 --
 -- Creazione: Feb 17, 2023 alle 10:40
--- Ultimo aggiornamento: Feb 17, 2023 alle 10:10
 --
 
 DROP TABLE IF EXISTS `pazienti`;
@@ -1013,8 +1010,7 @@ INSERT INTO `pazienti` (`CF`, `Cognome`, `Nome`, `Data_Nascita`, `Genere`, `Reca
 ('CRMRGN41D55B238S', 'Cerminara', 'Regina', '1941-04-15', 'F', '3646446156', 'NULL', 0),
 ('CRMRGR65B07L450W', 'Cremonese', 'Ruggero', '1965-02-07', 'M', '3430629378', 'NULL', 0.3),
 ('CRMSLL90H70E808F', 'Caremoli', 'Stella', '1990-06-30', 'F', '3331332719', 'NULL', 0),
-('CRMSVG55R41A853F', 'Caramagna', 'Selvaggia', '1955-10-01', 'F', '3997732697', 'NULL', 0);
-INSERT INTO `pazienti` (`CF`, `Cognome`, `Nome`, `Data_Nascita`, `Genere`, `Recapito`, `E-mail`, `Sconto`) VALUES
+('CRMSVG55R41A853F', 'Caramagna', 'Selvaggia', '1955-10-01', 'F', '3997732697', 'NULL', 0),
 ('CRNCVN63D16C006W', 'Corneli', 'Calvino', '1963-04-16', 'M', '3604355482', 'NULL', 0),
 ('CRNDNI77A65B866C', 'Cerini', 'Diana', '1977-01-25', 'F', '3436300061', 'NULL', 0.05),
 ('CRNDRN06T29H768D', 'Cariano', 'Adriano', '2006-12-29', 'M', '3769421122', 'NULL', 0),
@@ -1230,7 +1226,8 @@ INSERT INTO `pazienti` (`CF`, `Cognome`, `Nome`, `Data_Nascita`, `Genere`, `Reca
 ('DLLPIA57C71A405G', 'Della Vedova', 'Pia', '1957-03-31', 'F', '3789555234', 'NULL', 0),
 ('DLLSBN96D55B351O', 'DellAcqua', 'Sabina', '1996-04-15', 'F', '3889060380', 'NULL', 0),
 ('DLLSLV54M02L032V', 'Della Ratta', 'Silvio', '1954-08-02', 'M', '3475613571', 'NULL', 0.25),
-('DLLSND86H22L075O', 'Delle Fratte', 'Secondo', '1986-06-22', 'M', '3225333180', 'secondo.dellefratte@alice.it', 0.1),
+('DLLSND86H22L075O', 'Delle Fratte', 'Secondo', '1986-06-22', 'M', '3225333180', 'secondo.dellefratte@alice.it', 0.1);
+INSERT INTO `pazienti` (`CF`, `Cognome`, `Nome`, `Data_Nascita`, `Genere`, `Recapito`, `E-mail`, `Sconto`) VALUES
 ('DLMDNC63S23A815D', 'Delmati', 'Domenico', '1963-11-23', 'M', '3361083660', 'domenico.delmati@outlook.it', 0.25),
 ('DLMGPP54E26A577K', 'Delmiglio', 'Giuseppe', '1954-05-26', 'M', '3501048579', 'NULL', 0),
 ('DLMSDR85L43E066N', 'Dolmetta', 'Isidora', '1985-07-03', 'F', '3655224357', 'NULL', 0),
@@ -1553,8 +1550,7 @@ INSERT INTO `pazienti` (`CF`, `Cognome`, `Nome`, `Data_Nascita`, `Genere`, `Reca
 ('GNTGTN83C48A745D', 'Giuntino', 'Gaetana', '1983-03-08', 'F', '3672942823', 'NULL', 0),
 ('GNTSNT11E65E429I', 'Gentinetta', 'Samanta', '2011-05-25', 'F', '3761139363', 'samanta.gentinetta@virgilio.it', 0),
 ('GNXRRA41E42H488T', 'Ginex', 'Aurora', '1941-05-02', 'F', '3894615742', 'NULL', 0),
-('GNZBSL02R04C469D', 'Ignazio', 'Basilio', '2002-10-04', 'M', '3914418612', 'basilio.ignazio@gmail.com', 0);
-INSERT INTO `pazienti` (`CF`, `Cognome`, `Nome`, `Data_Nascita`, `Genere`, `Recapito`, `E-mail`, `Sconto`) VALUES
+('GNZBSL02R04C469D', 'Ignazio', 'Basilio', '2002-10-04', 'M', '3914418612', 'basilio.ignazio@gmail.com', 0),
 ('GNZGMN81A50B966C', 'Ganzerla', 'Germana', '1981-01-10', 'F', '3649677216', 'germana.ganzerla@virgilio.it', 0),
 ('GNZRSO01B64G702J', 'Ganzerla', 'Rosa', '2001-02-24', 'F', '3186713580', 'NULL', 0.15),
 ('GNZSRI52E48H047F', 'Gonzaga', 'Siria', '1952-05-08', 'F', '3295217444', 'NULL', 0),
@@ -1986,7 +1982,8 @@ INSERT INTO `pazienti` (`CF`, `Cognome`, `Nome`, `Data_Nascita`, `Genere`, `Reca
 ('NTRPCR16C05I760K', 'Interrante', 'Pancrazio', '2016-03-05', 'M', '3810619817', 'NULL', 0.15),
 ('NTRRBN61D43A052S', 'Notaristefano', 'Rubina', '1961-04-03', 'F', '3492663199', 'NULL', 0.1),
 ('NTZFNN68B11I183R', 'Antuzzi', 'Fernando', '1968-02-11', 'M', '3445972467', 'NULL', 0),
-('NVLRNI98M59A301O', 'Novellino', 'Rina', '1998-08-19', 'F', '3603657309', 'rina.novellino@pec.it', 0),
+('NVLRNI98M59A301O', 'Novellino', 'Rina', '1998-08-19', 'F', '3603657309', 'rina.novellino@pec.it', 0);
+INSERT INTO `pazienti` (`CF`, `Cognome`, `Nome`, `Data_Nascita`, `Genere`, `Recapito`, `E-mail`, `Sconto`) VALUES
 ('NVZMLT51C31I996S', 'Novazzi', 'Amleto', '1951-03-31', 'M', '3925211237', 'NULL', 0),
 ('NZLDRO70T69H545N', 'Anzilutti', 'Doria', '1970-12-29', 'F', '3908908558', 'doria.anzilutti@alice.it', 0),
 ('NZLNNZ09R07C404G', 'Anzelmo', 'Nunzio', '2009-10-07', 'M', '3972434398', 'NULL', 0.2),
@@ -2092,8 +2089,7 @@ INSERT INTO `pazienti` (`CF`, `Cognome`, `Nome`, `Data_Nascita`, `Genere`, `Reca
 ('QNTCLL52T28H480V', 'Quintilio', 'Catello', '1952-12-28', 'M', '3057597189', 'NULL', 0),
 ('QNTNTL45A67C294E', 'Quintiliani', 'Natalia', '1945-01-27', 'F', '3887597349', 'NULL', 0.25),
 ('QRCCLD61L26I970H', 'Querci', 'Cataldo', '1961-07-26', 'M', '3059610305', 'cataldo.querci@virgilio.it', 0),
-('QRCMMM97B27B144B', 'Quercia', 'Mimmo', '1997-02-27', 'M', '3489392891', 'NULL', 0.1);
-INSERT INTO `pazienti` (`CF`, `Cognome`, `Nome`, `Data_Nascita`, `Genere`, `Recapito`, `E-mail`, `Sconto`) VALUES
+('QRCMMM97B27B144B', 'Quercia', 'Mimmo', '1997-02-27', 'M', '3489392891', 'NULL', 0.1),
 ('QSSLLD40S07E651M', 'Quassi', 'Leopoldo', '1940-11-07', 'M', '3661446660', 'NULL', 0),
 ('RBNDNT09R08I359T', 'Rubino', 'Donato', '2009-10-08', 'M', '3918768534', 'NULL', 0.15),
 ('RCARTD11P14H532J', 'Arico', 'Aristide', '2011-09-14', 'M', '3497766468', 'aristide.arico@virgilio.it', 0.2),
@@ -2493,7 +2489,7 @@ DELIMITER ;
 -- Struttura della tabella `personale`
 --
 -- Creazione: Feb 17, 2023 alle 10:39
--- Ultimo aggiornamento: Feb 17, 2023 alle 13:46
+-- Ultimo aggiornamento: Feb 20, 2023 alle 11:38
 --
 
 DROP TABLE IF EXISTS `personale`;
@@ -2580,7 +2576,7 @@ DELIMITER ;
 -- Struttura della tabella `pp`
 --
 -- Creazione: Feb 16, 2023 alle 10:15
--- Ultimo aggiornamento: Feb 17, 2023 alle 14:07
+-- Ultimo aggiornamento: Feb 20, 2023 alle 11:39
 --
 
 DROP TABLE IF EXISTS `pp`;
@@ -3256,8 +3252,7 @@ INSERT INTO `pp` (`ID_PP`, `Paziente`, `Codice_Prestazione`, `Data`, `Stanza`, `
 (631, 'LTMCLN49R62H028W', 10, '2023-08-30 12:57:28', 'B1', 2, NULL, NULL, NULL),
 (632, 'LBRFMN10S48H703L', 6, '2023-10-11 09:52:03', 'B1', 3, NULL, NULL, NULL),
 (633, 'GRNFBL00E50H856A', 13, '2023-07-14 13:05:28', 'B1', 1, NULL, NULL, NULL),
-(634, 'GRSLBR96T17I613G', 6, '2023-06-07 12:20:24', 'B1', 3, NULL, NULL, NULL);
-INSERT INTO `pp` (`ID_PP`, `Paziente`, `Codice_Prestazione`, `Data`, `Stanza`, `Specialista`, `Assistente`, `Esito`, `Importo_Fattura`) VALUES
+(634, 'GRSLBR96T17I613G', 6, '2023-06-07 12:20:24', 'B1', 3, NULL, NULL, NULL),
 (635, 'CRCDNT72H04D653O', 2, '2023-09-29 15:55:12', 'B1', 7, NULL, NULL, NULL),
 (636, 'VJNLEA12C48L739L', 8, '2023-05-19 17:09:23', 'B3', 1, NULL, NULL, NULL),
 (637, 'BTRMRT43L53L187A', 9, '2023-03-27 12:26:11', 'B1', 14, NULL, NULL, NULL),
@@ -3511,7 +3506,8 @@ INSERT INTO `pp` (`ID_PP`, `Paziente`, `Codice_Prestazione`, `Data`, `Stanza`, `
 (885, 'DLCRND75C30L893K', 16, '2023-12-06 12:31:51', 'B2', 16, NULL, NULL, NULL),
 (886, 'GSLMCL97S01I260V', 16, '2023-03-31 17:31:16', 'B1', 16, NULL, NULL, NULL),
 (887, 'RGLDNI00A41L607U', 11, '2023-06-07 12:42:39', 'A1', 2, NULL, NULL, NULL),
-(888, 'BNCLNS05B21I165Y', 7, '2023-10-24 11:46:29', 'A2', 8, NULL, NULL, NULL),
+(888, 'BNCLNS05B21I165Y', 7, '2023-10-24 11:46:29', 'A2', 8, NULL, NULL, NULL);
+INSERT INTO `pp` (`ID_PP`, `Paziente`, `Codice_Prestazione`, `Data`, `Stanza`, `Specialista`, `Assistente`, `Esito`, `Importo_Fattura`) VALUES
 (889, 'BNNFDR11C19B993Y', 15, '2023-09-15 12:08:44', 'B1', 6, NULL, NULL, NULL),
 (890, 'DDIDLN14P48H505I', 2, '2023-10-16 13:29:47', 'B1', 12, NULL, NULL, NULL),
 (891, 'CRPVLI79B50D540H', 7, '2024-01-09 11:12:44', 'A1', 5, NULL, NULL, NULL),
@@ -4024,7 +4020,7 @@ CREATE TABLE IF NOT EXISTS `trattamenti` (
 -- Struttura della tabella `turni`
 --
 -- Creazione: Feb 16, 2023 alle 10:15
--- Ultimo aggiornamento: Feb 17, 2023 alle 11:58
+-- Ultimo aggiornamento: Feb 20, 2023 alle 11:38
 --
 
 DROP TABLE IF EXISTS `turni`;
@@ -4098,7 +4094,55 @@ INSERT INTO `turni` (`ID_Personale`, `Giorno`) VALUES
 (15, 'giovedì'),
 (16, 'martedì'),
 (16, 'mercoledì'),
-(16, 'venerdì');
+(16, 'venerdì'),
+(17, 'lunedì'),
+(17, 'martedì'),
+(17, 'giovedì'),
+(17, 'venerdì'),
+(18, 'lunedì'),
+(18, 'mercoledì'),
+(18, 'giovedì'),
+(18, 'venerdì'),
+(19, 'lunedì'),
+(19, 'martedì'),
+(19, 'mercoledì'),
+(19, 'giovedì'),
+(19, 'venerdì'),
+(20, 'lunedì'),
+(20, 'martedì'),
+(20, 'mercoledì'),
+(20, 'giovedì'),
+(20, 'venerdì'),
+(21, 'lunedì'),
+(21, 'martedì'),
+(21, 'mercoledì'),
+(21, 'giovedì'),
+(21, 'venerdì'),
+(22, 'lunedì'),
+(22, 'martedì'),
+(22, 'mercoledì'),
+(22, 'giovedì'),
+(22, 'venerdì'),
+(23, 'lunedì'),
+(23, 'martedì'),
+(23, 'mercoledì'),
+(23, 'giovedì'),
+(23, 'venerdì'),
+(24, 'lunedì'),
+(24, 'martedì'),
+(24, 'mercoledì'),
+(24, 'giovedì'),
+(24, 'venerdì'),
+(25, 'lunedì'),
+(25, 'martedì'),
+(25, 'mercoledì'),
+(25, 'giovedì'),
+(25, 'venerdì'),
+(26, 'lunedì'),
+(26, 'martedì'),
+(26, 'mercoledì'),
+(26, 'giovedì'),
+(26, 'venerdì');
 
 -- --------------------------------------------------------
 
