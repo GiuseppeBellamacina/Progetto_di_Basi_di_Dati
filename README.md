@@ -12,6 +12,8 @@ Quest'ultima contiene diversi file di testo contenenti dati estrapolati da regis
 
 Si può avviare il programma compilando ed eseguendo il file main.cpp direttamente dalla cartella.
 
+L'altra cartella presente è File_separati che contiene 4 file sql contenenti solo ed esclusivamente la struttura (tabelle e viste), i triggers, le procedure e i dati del database.
+
 Infine è presente il file sql contenente lo script relativo alla base di dati stessa. Mi sono servito di PHPMyAdmin tramite il sistema offerto da XAMPP per effettuare i test sul progetto e per compilare il file sql.
 
 
