@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:4306
--- Creato il: Feb 20, 2023 alle 12:41
+-- Creato il: Feb 23, 2023 alle 11:42
 -- Versione del server: 10.4.25-MariaDB
 -- Versione PHP: 8.1.10
 
@@ -97,6 +97,29 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `EffettuaPrestazione` (IN `Prenotazi
     WHERE ID_PP=Prenotazione;
     
     SET FOREIGN_KEY_CHECKS=1;
+END$$
+
+DROP PROCEDURE IF EXISTS `EffettuaPrestazioniConCursore`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `EffettuaPrestazioniConCursore` ()   BEGIN
+	DECLARE done BOOLEAN DEFAULT FALSE;
+    DECLARE paz int(8);
+    DECLARE cur CURSOR FOR(SELECT pp.ID_PP
+                           FROM pp
+                           WHERE pp.Data<CURRENT_TIMESTAMP
+                           ORDER BY pp.Data);
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+    
+    OPEN cur;
+    
+	cursloop: LOOP
+    	FETCH cur INTO paz;
+        IF done THEN
+        	LEAVE cursloop;
+        END IF;
+        CALL EffettuaPrestazione(paz,'OK');
+    END LOOP cursloop;
+        
+	CLOSE cur;
 END$$
 
 DROP PROCEDURE IF EXISTS `RipristinaStipendiEQuote`$$
@@ -1226,8 +1249,7 @@ INSERT INTO `pazienti` (`CF`, `Cognome`, `Nome`, `Data_Nascita`, `Genere`, `Reca
 ('DLLPIA57C71A405G', 'Della Vedova', 'Pia', '1957-03-31', 'F', '3789555234', 'NULL', 0),
 ('DLLSBN96D55B351O', 'DellAcqua', 'Sabina', '1996-04-15', 'F', '3889060380', 'NULL', 0),
 ('DLLSLV54M02L032V', 'Della Ratta', 'Silvio', '1954-08-02', 'M', '3475613571', 'NULL', 0.25),
-('DLLSND86H22L075O', 'Delle Fratte', 'Secondo', '1986-06-22', 'M', '3225333180', 'secondo.dellefratte@alice.it', 0.1);
-INSERT INTO `pazienti` (`CF`, `Cognome`, `Nome`, `Data_Nascita`, `Genere`, `Recapito`, `E-mail`, `Sconto`) VALUES
+('DLLSND86H22L075O', 'Delle Fratte', 'Secondo', '1986-06-22', 'M', '3225333180', 'secondo.dellefratte@alice.it', 0.1),
 ('DLMDNC63S23A815D', 'Delmati', 'Domenico', '1963-11-23', 'M', '3361083660', 'domenico.delmati@outlook.it', 0.25),
 ('DLMGPP54E26A577K', 'Delmiglio', 'Giuseppe', '1954-05-26', 'M', '3501048579', 'NULL', 0),
 ('DLMSDR85L43E066N', 'Dolmetta', 'Isidora', '1985-07-03', 'F', '3655224357', 'NULL', 0),
@@ -1552,7 +1574,8 @@ INSERT INTO `pazienti` (`CF`, `Cognome`, `Nome`, `Data_Nascita`, `Genere`, `Reca
 ('GNXRRA41E42H488T', 'Ginex', 'Aurora', '1941-05-02', 'F', '3894615742', 'NULL', 0),
 ('GNZBSL02R04C469D', 'Ignazio', 'Basilio', '2002-10-04', 'M', '3914418612', 'basilio.ignazio@gmail.com', 0),
 ('GNZGMN81A50B966C', 'Ganzerla', 'Germana', '1981-01-10', 'F', '3649677216', 'germana.ganzerla@virgilio.it', 0),
-('GNZRSO01B64G702J', 'Ganzerla', 'Rosa', '2001-02-24', 'F', '3186713580', 'NULL', 0.15),
+('GNZRSO01B64G702J', 'Ganzerla', 'Rosa', '2001-02-24', 'F', '3186713580', 'NULL', 0.15);
+INSERT INTO `pazienti` (`CF`, `Cognome`, `Nome`, `Data_Nascita`, `Genere`, `Recapito`, `E-mail`, `Sconto`) VALUES
 ('GNZSRI52E48H047F', 'Gonzaga', 'Siria', '1952-05-08', 'F', '3295217444', 'NULL', 0),
 ('GQNCRL43S03F182R', 'Giaquinta', 'Carlo', '1943-11-03', 'M', '3865472019', 'carlo.giaquinta@alice.it', 0.1),
 ('GQNTMS61B21D695I', 'Giaquinta', 'Tommaso', '1961-02-21', 'M', '3121354987', 'NULL', 0),
@@ -1982,8 +2005,7 @@ INSERT INTO `pazienti` (`CF`, `Cognome`, `Nome`, `Data_Nascita`, `Genere`, `Reca
 ('NTRPCR16C05I760K', 'Interrante', 'Pancrazio', '2016-03-05', 'M', '3810619817', 'NULL', 0.15),
 ('NTRRBN61D43A052S', 'Notaristefano', 'Rubina', '1961-04-03', 'F', '3492663199', 'NULL', 0.1),
 ('NTZFNN68B11I183R', 'Antuzzi', 'Fernando', '1968-02-11', 'M', '3445972467', 'NULL', 0),
-('NVLRNI98M59A301O', 'Novellino', 'Rina', '1998-08-19', 'F', '3603657309', 'rina.novellino@pec.it', 0);
-INSERT INTO `pazienti` (`CF`, `Cognome`, `Nome`, `Data_Nascita`, `Genere`, `Recapito`, `E-mail`, `Sconto`) VALUES
+('NVLRNI98M59A301O', 'Novellino', 'Rina', '1998-08-19', 'F', '3603657309', 'rina.novellino@pec.it', 0),
 ('NVZMLT51C31I996S', 'Novazzi', 'Amleto', '1951-03-31', 'M', '3925211237', 'NULL', 0),
 ('NZLDRO70T69H545N', 'Anzilutti', 'Doria', '1970-12-29', 'F', '3908908558', 'doria.anzilutti@alice.it', 0),
 ('NZLNNZ09R07C404G', 'Anzelmo', 'Nunzio', '2009-10-07', 'M', '3972434398', 'NULL', 0.2),
@@ -2489,7 +2511,7 @@ DELIMITER ;
 -- Struttura della tabella `personale`
 --
 -- Creazione: Feb 17, 2023 alle 10:39
--- Ultimo aggiornamento: Feb 20, 2023 alle 11:38
+-- Ultimo aggiornamento: Feb 20, 2023 alle 11:50
 --
 
 DROP TABLE IF EXISTS `personale`;
@@ -2576,7 +2598,7 @@ DELIMITER ;
 -- Struttura della tabella `pp`
 --
 -- Creazione: Feb 16, 2023 alle 10:15
--- Ultimo aggiornamento: Feb 20, 2023 alle 11:39
+-- Ultimo aggiornamento: Feb 20, 2023 alle 11:52
 --
 
 DROP TABLE IF EXISTS `pp`;
@@ -3506,8 +3528,7 @@ INSERT INTO `pp` (`ID_PP`, `Paziente`, `Codice_Prestazione`, `Data`, `Stanza`, `
 (885, 'DLCRND75C30L893K', 16, '2023-12-06 12:31:51', 'B2', 16, NULL, NULL, NULL),
 (886, 'GSLMCL97S01I260V', 16, '2023-03-31 17:31:16', 'B1', 16, NULL, NULL, NULL),
 (887, 'RGLDNI00A41L607U', 11, '2023-06-07 12:42:39', 'A1', 2, NULL, NULL, NULL),
-(888, 'BNCLNS05B21I165Y', 7, '2023-10-24 11:46:29', 'A2', 8, NULL, NULL, NULL);
-INSERT INTO `pp` (`ID_PP`, `Paziente`, `Codice_Prestazione`, `Data`, `Stanza`, `Specialista`, `Assistente`, `Esito`, `Importo_Fattura`) VALUES
+(888, 'BNCLNS05B21I165Y', 7, '2023-10-24 11:46:29', 'A2', 8, NULL, NULL, NULL),
 (889, 'BNNFDR11C19B993Y', 15, '2023-09-15 12:08:44', 'B1', 6, NULL, NULL, NULL),
 (890, 'DDIDLN14P48H505I', 2, '2023-10-16 13:29:47', 'B1', 12, NULL, NULL, NULL),
 (891, 'CRPVLI79B50D540H', 7, '2024-01-09 11:12:44', 'A1', 5, NULL, NULL, NULL),

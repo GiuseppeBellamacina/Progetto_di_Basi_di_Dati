@@ -106,6 +106,28 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `RipristinaStipendiEQuote` ()   BEGI
     SET Stipendio=1000;
 END$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `EffettuaPrestazioniConCursore` ()   BEGIN
+	DECLARE done BOOLEAN DEFAULT FALSE;
+    DECLARE paz int(8);
+    DECLARE cur CURSOR FOR(SELECT pp.ID_PP
+                           FROM pp
+                           WHERE pp.Data<CURRENT_TIMESTAMP
+                           ORDER BY pp.Data);
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+    
+    OPEN cur;
+    
+	cursloop: LOOP
+    	FETCH cur INTO paz;
+        IF done THEN
+        	LEAVE cursloop;
+        END IF;
+        CALL EffettuaPrestazione(paz,'OK');
+    END LOOP cursloop;
+        
+	CLOSE cur;
+END$$
+
 --
 -- Funzioni
 --
