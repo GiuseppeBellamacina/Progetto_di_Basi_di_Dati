@@ -95,17 +95,6 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `EffettuaPrestazione` (IN `Prenotazi
     SET FOREIGN_KEY_CHECKS=1;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `RipristinaStipendiEQuote` ()   BEGIN
-	UPDATE personale
-    SET Quota=0;
-    
-    UPDATE specialisti
-    SET Stipendio=1500;
-    
-    UPDATE assistenti
-    SET Stipendio=1000;
-END$$
-
 CREATE DEFINER=`root`@`localhost` PROCEDURE `EffettuaPrestazioniConCursore` ()   BEGIN
 	DECLARE done BOOLEAN DEFAULT FALSE;
     DECLARE paz int(8);
@@ -128,6 +117,17 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `EffettuaPrestazioniConCursore` ()  
 	CLOSE cur;
 END$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `RipristinaStipendiEQuote` ()   BEGIN
+	UPDATE personale
+    SET Quota=0;
+    
+    UPDATE specialisti
+    SET Stipendio=2500;
+    
+    UPDATE assistenti
+    SET Stipendio=1800;
+END$$
+
 --
 -- Funzioni
 --
@@ -141,7 +141,7 @@ CREATE DEFINER=`root`@`localhost` FUNCTION `findAssistente` (`CodicePrestazione`
 		AND NOT EXISTS (SELECT *
 			FROM pp
 			WHERE ID=Assistente
-			AND ABS(TIMEDIFF(Data, DataOra))<10000)
+			AND TIME_TO_SEC(ABS(TIMEDIFF(Data, DataOra)))<3600)
             AND EXISTS (SELECT *
                 FROM turni
                 WHERE turni.ID_Personale=assistenti.ID
@@ -160,7 +160,7 @@ CREATE DEFINER=`root`@`localhost` FUNCTION `findSpecialista` (`Tipo` VARCHAR(11)
 		WHERE NOT EXISTS (SELECT *
 			FROM pp
 			WHERE ID=Specialista
-			AND ABS(TIMEDIFF(Data, DataOra))<10000)
+			AND TIME_TO_SEC(ABS(TIMEDIFF(Data, DataOra)))<3600)
             AND EXISTS (SELECT *
                 FROM turni
                 WHERE turni.ID_Personale=specialisti.ID
@@ -175,7 +175,7 @@ CREATE DEFINER=`root`@`localhost` FUNCTION `findSpecialista` (`Tipo` VARCHAR(11)
 		AND NOT EXISTS (SELECT *
 			FROM pp
 			WHERE ID=Specialista
-			AND ABS(TIMEDIFF(Data, DataOra))<10000)
+			AND TIME_TO_SEC(ABS(TIMEDIFF(Data, DataOra)))<3600)
             AND EXISTS (SELECT *
                 FROM turni
                 WHERE turni.ID_Personale=specialisti.ID
@@ -192,19 +192,19 @@ CREATE DEFINER=`root`@`localhost` FUNCTION `findStanza` (`Tipo` VARCHAR(11), `Da
 			WHEN NOT EXISTS (SELECT *
        				FROM pp
             			WHERE Stanza='A1'
-              			AND ABS(TIMEDIFF(Data, DataOra))<10000) THEN RETURN 'A1';
+              			AND TIME_TO_SEC(ABS(TIMEDIFF(Data, DataOra)))<3600) THEN RETURN 'A1';
 			WHEN NOT EXISTS (SELECT *
        				FROM pp
             			WHERE Stanza='A2'
-              			AND ABS(TIMEDIFF(Data, DataOra))<10000) THEN RETURN 'A2';
+              			AND TIME_TO_SEC(ABS(TIMEDIFF(Data, DataOra)))<3600) THEN RETURN 'A2';
 			WHEN NOT EXISTS (SELECT *
        				FROM pp
             			WHERE Stanza='A3'
-              			AND ABS(TIMEDIFF(Data, DataOra))<10000) THEN RETURN 'A3';
+              			AND TIME_TO_SEC(ABS(TIMEDIFF(Data, DataOra)))<3600) THEN RETURN 'A3';
 			WHEN NOT EXISTS (SELECT *
        				FROM pp
             			WHERE Stanza='A4'
-              			AND ABS(TIMEDIFF(Data, DataOra))<10000) THEN RETURN 'A4';
+              			AND TIME_TO_SEC(ABS(TIMEDIFF(Data, DataOra)))<3600) THEN RETURN 'A4';
 			ELSE RETURN NULL;
 		END CASE;
 	ELSE
@@ -212,19 +212,19 @@ CREATE DEFINER=`root`@`localhost` FUNCTION `findStanza` (`Tipo` VARCHAR(11), `Da
 			WHEN NOT EXISTS (SELECT *
        				FROM pp
             			WHERE Stanza='B1'
-              			AND ABS(TIMEDIFF(Data, DataOra))<10000) THEN RETURN 'B1';
+              			AND TIME_TO_SEC(ABS(TIMEDIFF(Data, DataOra)))<3600) THEN RETURN 'B1';
 			WHEN NOT EXISTS (SELECT *
        				FROM pp
             			WHERE Stanza='B2'
-              			AND ABS(TIMEDIFF(Data, DataOra))<10000) THEN RETURN 'B2';
+              			AND TIME_TO_SEC(ABS(TIMEDIFF(Data, DataOra)))<3600) THEN RETURN 'B2';
 			WHEN NOT EXISTS (SELECT *
        				FROM pp
             			WHERE Stanza='B3'
-              			AND ABS(TIMEDIFF(Data, DataOra))<10000) THEN RETURN 'B3';
+              			AND TIME_TO_SEC(ABS(TIMEDIFF(Data, DataOra)))<3600) THEN RETURN 'B3';
 			WHEN NOT EXISTS (SELECT *
        				FROM pp
             			WHERE Stanza='B4'
-              			AND ABS(TIMEDIFF(Data, DataOra))<10000) THEN RETURN 'B4';
+              			AND TIME_TO_SEC(ABS(TIMEDIFF(Data, DataOra)))<3600) THEN RETURN 'B4';
 			ELSE RETURN NULL;
 		END CASE;
 	END IF;

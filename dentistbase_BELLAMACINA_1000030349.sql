@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:4306
--- Creato il: Feb 23, 2023 alle 11:42
+-- Creato il: Feb 24, 2023 alle 16:22
 -- Versione del server: 10.4.25-MariaDB
 -- Versione PHP: 8.1.10
 
@@ -128,10 +128,10 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `RipristinaStipendiEQuote` ()   BEGI
     SET Quota=0;
     
     UPDATE specialisti
-    SET Stipendio=1500;
+    SET Stipendio=2500;
     
     UPDATE assistenti
-    SET Stipendio=1000;
+    SET Stipendio=1800;
 END$$
 
 --
@@ -148,7 +148,7 @@ CREATE DEFINER=`root`@`localhost` FUNCTION `findAssistente` (`CodicePrestazione`
 		AND NOT EXISTS (SELECT *
 			FROM pp
 			WHERE ID=Assistente
-			AND ABS(TIMEDIFF(Data, DataOra))<10000)
+			AND TIME_TO_SEC(ABS(TIMEDIFF(Data, DataOra)))<3600)
             AND EXISTS (SELECT *
                 FROM turni
                 WHERE turni.ID_Personale=assistenti.ID
@@ -168,7 +168,7 @@ CREATE DEFINER=`root`@`localhost` FUNCTION `findSpecialista` (`Tipo` VARCHAR(11)
 		WHERE NOT EXISTS (SELECT *
 			FROM pp
 			WHERE ID=Specialista
-			AND ABS(TIMEDIFF(Data, DataOra))<10000)
+			AND TIME_TO_SEC(ABS(TIMEDIFF(Data, DataOra)))<3600)
             AND EXISTS (SELECT *
                 FROM turni
                 WHERE turni.ID_Personale=specialisti.ID
@@ -183,7 +183,7 @@ CREATE DEFINER=`root`@`localhost` FUNCTION `findSpecialista` (`Tipo` VARCHAR(11)
 		AND NOT EXISTS (SELECT *
 			FROM pp
 			WHERE ID=Specialista
-			AND ABS(TIMEDIFF(Data, DataOra))<10000)
+			AND TIME_TO_SEC(ABS(TIMEDIFF(Data, DataOra)))<3600)
             AND EXISTS (SELECT *
                 FROM turni
                 WHERE turni.ID_Personale=specialisti.ID
@@ -201,19 +201,19 @@ CREATE DEFINER=`root`@`localhost` FUNCTION `findStanza` (`Tipo` VARCHAR(11), `Da
 			WHEN NOT EXISTS (SELECT *
        				FROM pp
             			WHERE Stanza='A1'
-              			AND ABS(TIMEDIFF(Data, DataOra))<10000) THEN RETURN 'A1';
+              			AND TIME_TO_SEC(ABS(TIMEDIFF(Data, DataOra)))<3600) THEN RETURN 'A1';
 			WHEN NOT EXISTS (SELECT *
        				FROM pp
             			WHERE Stanza='A2'
-              			AND ABS(TIMEDIFF(Data, DataOra))<10000) THEN RETURN 'A2';
+              			AND TIME_TO_SEC(ABS(TIMEDIFF(Data, DataOra)))<3600) THEN RETURN 'A2';
 			WHEN NOT EXISTS (SELECT *
        				FROM pp
             			WHERE Stanza='A3'
-              			AND ABS(TIMEDIFF(Data, DataOra))<10000) THEN RETURN 'A3';
+              			AND TIME_TO_SEC(ABS(TIMEDIFF(Data, DataOra)))<3600) THEN RETURN 'A3';
 			WHEN NOT EXISTS (SELECT *
        				FROM pp
             			WHERE Stanza='A4'
-              			AND ABS(TIMEDIFF(Data, DataOra))<10000) THEN RETURN 'A4';
+              			AND TIME_TO_SEC(ABS(TIMEDIFF(Data, DataOra)))<3600) THEN RETURN 'A4';
 			ELSE RETURN NULL;
 		END CASE;
 	ELSE
@@ -221,19 +221,19 @@ CREATE DEFINER=`root`@`localhost` FUNCTION `findStanza` (`Tipo` VARCHAR(11), `Da
 			WHEN NOT EXISTS (SELECT *
        				FROM pp
             			WHERE Stanza='B1'
-              			AND ABS(TIMEDIFF(Data, DataOra))<10000) THEN RETURN 'B1';
+              			AND TIME_TO_SEC(ABS(TIMEDIFF(Data, DataOra)))<3600) THEN RETURN 'B1';
 			WHEN NOT EXISTS (SELECT *
        				FROM pp
             			WHERE Stanza='B2'
-              			AND ABS(TIMEDIFF(Data, DataOra))<10000) THEN RETURN 'B2';
+              			AND TIME_TO_SEC(ABS(TIMEDIFF(Data, DataOra)))<3600) THEN RETURN 'B2';
 			WHEN NOT EXISTS (SELECT *
        				FROM pp
             			WHERE Stanza='B3'
-              			AND ABS(TIMEDIFF(Data, DataOra))<10000) THEN RETURN 'B3';
+              			AND TIME_TO_SEC(ABS(TIMEDIFF(Data, DataOra)))<3600) THEN RETURN 'B3';
 			WHEN NOT EXISTS (SELECT *
        				FROM pp
             			WHERE Stanza='B4'
-              			AND ABS(TIMEDIFF(Data, DataOra))<10000) THEN RETURN 'B4';
+              			AND TIME_TO_SEC(ABS(TIMEDIFF(Data, DataOra)))<3600) THEN RETURN 'B4';
 			ELSE RETURN NULL;
 		END CASE;
 	END IF;
@@ -2511,7 +2511,7 @@ DELIMITER ;
 -- Struttura della tabella `personale`
 --
 -- Creazione: Feb 17, 2023 alle 10:39
--- Ultimo aggiornamento: Feb 20, 2023 alle 11:50
+-- Ultimo aggiornamento: Feb 24, 2023 alle 15:19
 --
 
 DROP TABLE IF EXISTS `personale`;
@@ -2541,34 +2541,34 @@ TRUNCATE TABLE `personale`;
 --
 
 INSERT INTO `personale` (`ID`, `Cognome`, `Nome`, `Recapito`, `E-mail`, `Specializzazione`, `Stipendio`, `Quota`) VALUES
-(1, 'Filip', 'Pino', '3475684952', 'filip.pino@gmail.com', 'Implantologia', 1500, 0),
-(2, 'Pappalardo', 'Daniele', '3289456217', 'pappalardo.daniele@outlook.it', 'Implantologia', 1500, 0),
-(3, 'Torrisi', 'Antonio', '3458896521', 'torrisi.antonio@gmail.com', 'Igiene Dentale', 1500, 0),
-(4, 'Bianchi', 'Priscilla', '3259664114', 'bianchi.priscilla@gmail.com', 'Igiene Dentale', 1500, 0),
-(5, 'Giorgio', 'Giovanni', '3398725654', 'giorgio.giovanni@alice.it', 'Parodontologia', 1500, 0),
-(6, 'Escobar', 'Pedro', '3288851293', 'escobar.pedro@virgilio.it', 'Parodontologia', 1500, 0),
-(7, 'Pricoco', 'Martina', '3496862541', 'pricoco.martina@alice.it', 'Endodonzia', 1500, 0),
-(8, 'Zappalà', 'Ludovica', '3935521469', 'zappala.ludovica@gmail.com', 'Endodonzia', 1500, 0),
-(9, 'Di Stefano', 'Stefano', '3458559612', 'distefano.stefano@gmail.com', 'Protesi Dentaria', 1500, 0),
-(10, 'Messina', 'Paola', '3589641258', 'messina.paola@gmail.com', 'Protesi Dentaria', 1500, 0),
-(11, 'Lanzafame', 'Alfio', '3289456441', 'lanzafame.alfio@gmail.com', 'Odontostomatologia', 1500, 0),
-(12, 'Santonocito', 'Maria', '3396555123', 'santonocito.maria@outlook.it', 'Odontostomatologia', 1500, 0),
-(13, 'Barbero', 'Alfonso', '3256987214', 'barbero.alfonso@outlook.it', 'Ortognatodonzia', 1500, 0),
-(14, 'Calderone', 'Lucia', '3226541978', 'calderone.lucia@gmail.com', 'Ortognatodonzia', 1500, 0),
-(15, 'Verdi', 'Luigi', '3456987124', 'verdi.luigi@gmail.com', 'Gnatologia', 1500, 0),
-(16, 'Rossi', 'Mario', '3479165428', 'rossi.mario@gmail.com', 'Gnatologia', 1500, 0),
-(17, 'Aldini', 'Matteo', '3456974521', 'aldini.matteo@alice.it', NULL, 1000, 0),
-(18, 'Aquila', 'Noemi', '3256415258', 'aquila.noemi@gmail.com', NULL, 1000, 0),
-(19, 'Cristoforo', 'Elga', '3596458741', 'cristoforo.elga@outlook.it', NULL, 1000, 0),
-(20, 'Napoli', 'Giovanna', '3253657914', 'napoli.giovanna@outlook.it', NULL, 1000, 0),
-(21, 'Dente', 'Andrea', '3325669855', 'dente.andrea@virgilio.it', NULL, 1000, 0),
-(22, 'Favara', 'Gianfranco', '3255419753', 'favara.gianfranco@gmail.com', NULL, 1000, 0),
-(23, 'Giotto', 'Alessandro', '3256412879', 'giotto.alessandro@outlook.it', NULL, 1000, 0),
-(24, 'Iannone', 'Pietro', '3225654780', 'iannone.pietro@gmail.com', NULL, 1000, 0),
-(25, 'Leone', 'Vincenza', '3254520015', 'leone.vincenza@gmail.com', NULL, 1000, 0),
-(26, 'Moreno', 'Antonio', '3205489540', 'moreno.antonio@gmail.com', NULL, 1000, 0),
-(27, 'Ruspino', 'Roberto', '3257941065', 'ruspino.roberto@gmail.com', NULL, 1000, 0),
-(28, 'Cristaldi', 'Daniela', '3257941500', 'cristaldi.daniela@alice.it', NULL, 1000, 0);
+(1, 'Filip', 'Pino', '3475684952', 'filip.pino@gmail.com', 'Implantologia', 2500, 0),
+(2, 'Pappalardo', 'Daniele', '3289456217', 'pappalardo.daniele@outlook.it', 'Implantologia', 2500, 0),
+(3, 'Torrisi', 'Antonio', '3458896521', 'torrisi.antonio@gmail.com', 'Igiene Dentale', 2500, 0),
+(4, 'Bianchi', 'Priscilla', '3259664114', 'bianchi.priscilla@gmail.com', 'Igiene Dentale', 2500, 0),
+(5, 'Giorgio', 'Giovanni', '3398725654', 'giorgio.giovanni@alice.it', 'Parodontologia', 2500, 0),
+(6, 'Escobar', 'Pedro', '3288851293', 'escobar.pedro@virgilio.it', 'Parodontologia', 2500, 0),
+(7, 'Pricoco', 'Martina', '3496862541', 'pricoco.martina@alice.it', 'Endodonzia', 2500, 0),
+(8, 'Zappalà', 'Ludovica', '3935521469', 'zappala.ludovica@gmail.com', 'Endodonzia', 2500, 0),
+(9, 'Di Stefano', 'Stefano', '3458559612', 'distefano.stefano@gmail.com', 'Protesi Dentaria', 2500, 0),
+(10, 'Messina', 'Paola', '3589641258', 'messina.paola@gmail.com', 'Protesi Dentaria', 2500, 0),
+(11, 'Lanzafame', 'Alfio', '3289456441', 'lanzafame.alfio@gmail.com', 'Odontostomatologia', 2500, 0),
+(12, 'Santonocito', 'Maria', '3396555123', 'santonocito.maria@outlook.it', 'Odontostomatologia', 2500, 0),
+(13, 'Barbero', 'Alfonso', '3256987214', 'barbero.alfonso@outlook.it', 'Ortognatodonzia', 2500, 0),
+(14, 'Calderone', 'Lucia', '3226541978', 'calderone.lucia@gmail.com', 'Ortognatodonzia', 2500, 0),
+(15, 'Verdi', 'Luigi', '3456987124', 'verdi.luigi@gmail.com', 'Gnatologia', 2500, 0),
+(16, 'Rossi', 'Mario', '3479165428', 'rossi.mario@gmail.com', 'Gnatologia', 2500, 0),
+(17, 'Aldini', 'Matteo', '3456974521', 'aldini.matteo@alice.it', NULL, 1800, 0),
+(18, 'Aquila', 'Noemi', '3256415258', 'aquila.noemi@gmail.com', NULL, 1800, 0),
+(19, 'Cristoforo', 'Elga', '3596458741', 'cristoforo.elga@outlook.it', NULL, 1800, 0),
+(20, 'Napoli', 'Giovanna', '3253657914', 'napoli.giovanna@outlook.it', NULL, 1800, 0),
+(21, 'Dente', 'Andrea', '3325669855', 'dente.andrea@virgilio.it', NULL, 1800, 0),
+(22, 'Favara', 'Gianfranco', '3255419753', 'favara.gianfranco@gmail.com', NULL, 1800, 0),
+(23, 'Giotto', 'Alessandro', '3256412879', 'giotto.alessandro@outlook.it', NULL, 1800, 0),
+(24, 'Iannone', 'Pietro', '3225654780', 'iannone.pietro@gmail.com', NULL, 1800, 0),
+(25, 'Leone', 'Vincenza', '3254520015', 'leone.vincenza@gmail.com', NULL, 1800, 0),
+(26, 'Moreno', 'Antonio', '3205489540', 'moreno.antonio@gmail.com', NULL, 1800, 0),
+(27, 'Ruspino', 'Roberto', '3257941065', 'ruspino.roberto@gmail.com', NULL, 1800, 0),
+(28, 'Cristaldi', 'Daniela', '3257941500', 'cristaldi.daniela@alice.it', NULL, 1800, 0);
 
 --
 -- Trigger `personale`
@@ -3815,11 +3815,11 @@ CREATE TRIGGER `AggiornaStipendioEQuota` BEFORE UPDATE ON `pp` FOR EACH ROW trig
     END IF;
     
 	UPDATE specialisti
-    SET Quota=Quota+new.Importo_Fattura, Stipendio=1500+Quota*0.025
+    SET Quota=Quota+new.Importo_Fattura, Stipendio=1500+Quota*0.05
     WHERE ID=new.Specialista;
     
     UPDATE assistenti
-    SET Quota=Quota+new.Importo_Fattura, Stipendio=1000+Quota*0.025
+    SET Quota=Quota+new.Importo_Fattura, Stipendio=1000+Quota*0.05
     WHERE ID=new.Assistente;
 END
 $$
