@@ -3815,11 +3815,11 @@ CREATE TRIGGER `AggiornaStipendioEQuota` BEFORE UPDATE ON `pp` FOR EACH ROW trig
     END IF;
     
 	UPDATE specialisti
-    SET Quota=Quota+new.Importo_Fattura, Stipendio=Stipendio+Quota*0.05
+    SET Quota=Quota+new.Importo_Fattura, Stipendio=2500+Quota*0.05
     WHERE ID=new.Specialista;
     
     UPDATE assistenti
-    SET Quota=Quota+new.Importo_Fattura, Stipendio=Stipendio+Quota*0.05
+    SET Quota=Quota+new.Importo_Fattura, Stipendio=1800+Quota*0.05
     WHERE ID=new.Assistente;
 END
 $$
