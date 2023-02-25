@@ -3875,7 +3875,7 @@ CREATE TRIGGER `pp_INSStessoLuogoEOra` AFTER INSERT ON `pp` FOR EACH ROW BEGIN
 	IF EXISTS (SELECT *
               FROM pp
               WHERE Stanza=new.Stanza
-              AND ABS(TIMEDIFF(Data, new.Data))<10000
+              AND TIME_TO_SEC(ABS(TIMEDIFF(Data, new.Data)))<3600
               AND ID_PP<>new.ID_PP) THEN
         DELETE FROM pp
         WHERE ID_PP=new.ID_PP;
@@ -3889,7 +3889,7 @@ CREATE TRIGGER `pp_INSStessoMedEOra` AFTER INSERT ON `pp` FOR EACH ROW BEGIN
 	IF EXISTS (SELECT *
               FROM pp
               WHERE Specialista=new.Specialista
-              AND ABS(TIMEDIFF(Data, new.Data))<10000
+              AND TIME_TO_SEC(ABS(TIMEDIFF(Data, new.Data)))<3600
               AND ID_PP<>new.ID_PP) THEN
         DELETE FROM pp
         WHERE ID_PP=new.ID_PP;
@@ -3946,7 +3946,7 @@ CREATE TRIGGER `pp_UPDStessoLuogoEOra` AFTER UPDATE ON `pp` FOR EACH ROW BEGIN
 	IF EXISTS (SELECT *
               FROM pp
               WHERE Stanza=new.Stanza
-              AND ABS(TIMEDIFF(Data, new.Data))<10000
+              AND TIME_TO_SEC(ABS(TIMEDIFF(Data, new.Data)))<3600
               AND ID_PP<>new.ID_PP) THEN
         DELETE FROM pp
         WHERE ID_PP=new.ID_PP;
@@ -3960,7 +3960,7 @@ CREATE TRIGGER `pp_UPDStessoMedEOra` AFTER UPDATE ON `pp` FOR EACH ROW BEGIN
 	IF EXISTS (SELECT *
               FROM pp
               WHERE Specialista=new.Specialista
-              AND ABS(TIMEDIFF(Data, new.Data))<10000
+              AND TIME_TO_SEC(ABS(TIMEDIFF(Data, new.Data)))<3600
               AND ID_PP<>new.ID_PP) THEN
         DELETE FROM pp
         WHERE ID_PP=new.ID_PP;
