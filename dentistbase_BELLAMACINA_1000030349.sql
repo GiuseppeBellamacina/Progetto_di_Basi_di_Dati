@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:4306
--- Creato il: Feb 24, 2023 alle 16:22
+-- Creato il: Feb 26, 2023 alle 17:52
 -- Versione del server: 10.4.25-MariaDB
 -- Versione PHP: 8.1.10
 
@@ -247,6 +247,7 @@ DELIMITER ;
 -- Struttura della tabella `abilitazioni`
 --
 -- Creazione: Feb 16, 2023 alle 10:15
+-- Ultimo aggiornamento: Feb 25, 2023 alle 16:17
 --
 
 DROP TABLE IF EXISTS `abilitazioni`;
@@ -337,6 +338,8 @@ CREATE TRIGGER `abilitazioni_INS_AbilitazioneControllo` AFTER INSERT ON `abilita
 		DELETE FROM abilitazioni
 		WHERE ID_Personale=new.ID_Personale
 		AND Abilitazione=new.Abilitazione;
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Abilitazione non assegnabile';
 	END IF;
 END
 $$
@@ -350,6 +353,8 @@ CREATE TRIGGER `abilitazioni_UPD_AbilitazioneControllo` AFTER UPDATE ON `abilita
 		DELETE FROM abilitazioni
 		WHERE ID_Personale=new.ID_Personale
 		AND Abilitazione=new.Abilitazione;
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Abilitazione non assegnabile';
 	END IF;
 END
 $$
@@ -391,6 +396,7 @@ CREATE TABLE IF NOT EXISTS `controlli` (
 -- Struttura della tabella `listaprestazioni`
 --
 -- Creazione: Feb 16, 2023 alle 10:15
+-- Ultimo aggiornamento: Feb 25, 2023 alle 16:17
 --
 
 DROP TABLE IF EXISTS `listaprestazioni`;
@@ -442,6 +448,8 @@ DELIMITER $$
 CREATE TRIGGER `listaprestazioni_INSValoreNegativo` BEFORE INSERT ON `listaprestazioni` FOR EACH ROW BEGIN
 	IF new.Costo<0 THEN
     	SET new.Costo=0;
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Prezzo inferiore a 0';
     END IF;
 END
 $$
@@ -451,6 +459,8 @@ DELIMITER $$
 CREATE TRIGGER `listaprestazioni_UPDValoreNegativo` BEFORE UPDATE ON `listaprestazioni` FOR EACH ROW BEGIN
 	IF new.Costo<0 THEN
     	SET new.Costo=0;
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Prezzo inferiore a 0';
     END IF;
 END
 $$
@@ -462,6 +472,7 @@ DELIMITER ;
 -- Struttura della tabella `pazienti`
 --
 -- Creazione: Feb 17, 2023 alle 10:40
+-- Ultimo aggiornamento: Feb 25, 2023 alle 16:17
 --
 
 DROP TABLE IF EXISTS `pazienti`;
@@ -2491,6 +2502,8 @@ DELIMITER $$
 CREATE TRIGGER `pazienti_INSScontoEcc` BEFORE INSERT ON `pazienti` FOR EACH ROW BEGIN
 	IF new.Sconto>1 THEN
     	SET new.Sconto=1;
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Sconto eccessivo';
     END IF;
 END
 $$
@@ -2500,6 +2513,8 @@ DELIMITER $$
 CREATE TRIGGER `pazienti_UPDScontoEcc` BEFORE UPDATE ON `pazienti` FOR EACH ROW BEGIN
 	IF new.Sconto>1 THEN
     	SET new.Sconto=1;
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Sconto eccessivo';
     END IF;
 END
 $$
@@ -2511,7 +2526,7 @@ DELIMITER ;
 -- Struttura della tabella `personale`
 --
 -- Creazione: Feb 17, 2023 alle 10:39
--- Ultimo aggiornamento: Feb 24, 2023 alle 15:19
+-- Ultimo aggiornamento: Feb 25, 2023 alle 16:17
 --
 
 DROP TABLE IF EXISTS `personale`;
@@ -2578,6 +2593,8 @@ DELIMITER $$
 CREATE TRIGGER `personale_INSLimiteStipendio` BEFORE INSERT ON `personale` FOR EACH ROW BEGIN
 	IF new.Stipendio>5000 THEN
     	SET new.Stipendio=5000;
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Stipendio superiore a 5000';
     END IF;
 END
 $$
@@ -2587,6 +2604,8 @@ DELIMITER $$
 CREATE TRIGGER `personale_UPDLimiteStipendio` BEFORE UPDATE ON `personale` FOR EACH ROW BEGIN
 	IF new.Stipendio>5000 THEN
     	SET new.Stipendio=5000;
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Stipendio superiore a 5000';
     END IF;
 END
 $$
@@ -2598,7 +2617,7 @@ DELIMITER ;
 -- Struttura della tabella `pp`
 --
 -- Creazione: Feb 16, 2023 alle 10:15
--- Ultimo aggiornamento: Feb 20, 2023 alle 11:52
+-- Ultimo aggiornamento: Feb 25, 2023 alle 16:17
 --
 
 DROP TABLE IF EXISTS `pp`;
@@ -3840,22 +3859,30 @@ CREATE TRIGGER `pp_INSAbilitazioneRichiesta` AFTER INSERT ON `pp` FOR EACH ROW B
                     AND specialisti.ID=new.Specialista) THEN
                     	DELETE FROM pp
                         WHERE ID_PP=new.ID_PP;
+                        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Abilitazione Richiesta';
      ELSEIF tip='Controllo'
      AND EXISTS (SELECT *
                  FROM assistenti
                  WHERE assistenti.ID=new.Specialista) THEN
                  	DELETE FROM pp
                     WHERE ID_PP=new.ID_PP;
+                    SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Abilitazione Richiesta';
      ELSEIF tip='Trattamento'
      AND EXISTS (SELECT *
                  FROM specialisti
                  WHERE specialisti.ID=new.Assistente) THEN
                  	DELETE FROM pp
                     WHERE ID_PP=new.ID_PP;
+                    SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Abilitazione Richiesta';
      ELSEIF tip='Controllo'
      AND new.Assistente IS NOT NULL THEN
      	DELETE FROM pp
         WHERE ID_PP=new.ID_PP;
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Abilitazione Richiesta';
      END IF;
 END
 $$
@@ -3865,6 +3892,8 @@ DELIMITER $$
 CREATE TRIGGER `pp_INSPrenotazioneDalPassato` BEFORE INSERT ON `pp` FOR EACH ROW BEGIN
 	IF new.Data<CURRENT_TIMESTAMP THEN
     	SET new.Data=CURRENT_TIMESTAMP;
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Data passata';
     END IF;
 END
 $$
@@ -3879,6 +3908,8 @@ CREATE TRIGGER `pp_INSStessoLuogoEOra` AFTER INSERT ON `pp` FOR EACH ROW BEGIN
               AND ID_PP<>new.ID_PP) THEN
         DELETE FROM pp
         WHERE ID_PP=new.ID_PP;
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Stanza occupata';
     END IF;
 END
 $$
@@ -3893,6 +3924,8 @@ CREATE TRIGGER `pp_INSStessoMedEOra` AFTER INSERT ON `pp` FOR EACH ROW BEGIN
               AND ID_PP<>new.ID_PP) THEN
         DELETE FROM pp
         WHERE ID_PP=new.ID_PP;
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Medico occupato';
     END IF;
 END
 $$
@@ -3912,20 +3945,28 @@ CREATE TRIGGER `pp_UPDAbilitazioneRichiesta` BEFORE UPDATE ON `pp` FOR EACH ROW 
                     WHERE abilitazioni.ID_Personale=specialisti.ID
                     AND specialisti.ID=new.Specialista) THEN
                     	SET new.Specialista=old.Specialista;
+                        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Abilitazione Richiesta';
      ELSEIF tip='Controllo'
      AND EXISTS (SELECT *
                  FROM assistenti
                  WHERE assistenti.ID=new.Specialista) THEN
                  	SET new.Specialista=old.Specialista;
+                    SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Abilitazione Richiesta';
      END IF;
      IF tip='Trattamento'
      AND EXISTS (SELECT *
                  FROM specialisti
                  WHERE specialisti.ID=new.Assistente) THEN
                  	SET new.Assistente=old.Assistente;
+                    SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Abilitazione Richiesta';
      ELSEIF tip='Controllo'
      AND new.Assistente IS NOT NULL THEN
      SET new.Assistente=old.Assistente;
+     SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Abilitazione Richiesta';
      END IF;
 END
 $$
@@ -3936,6 +3977,8 @@ CREATE TRIGGER `pp_UPDPrenotazioneDalPassato` BEFORE UPDATE ON `pp` FOR EACH ROW
 	IF old.Data<>new.Data
     AND new.Data<CURRENT_TIMESTAMP THEN
     	SET new.Data=CURRENT_TIMESTAMP;
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Data passata';
     END IF;
 END
 $$
@@ -3950,6 +3993,8 @@ CREATE TRIGGER `pp_UPDStessoLuogoEOra` AFTER UPDATE ON `pp` FOR EACH ROW BEGIN
               AND ID_PP<>new.ID_PP) THEN
         DELETE FROM pp
         WHERE ID_PP=new.ID_PP;
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Stanza occupata';
     END IF;
 END
 $$
@@ -3964,6 +4009,8 @@ CREATE TRIGGER `pp_UPDStessoMedEOra` AFTER UPDATE ON `pp` FOR EACH ROW BEGIN
               AND ID_PP<>new.ID_PP) THEN
         DELETE FROM pp
         WHERE ID_PP=new.ID_PP;
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Medico occupato';
     END IF;
 END
 $$
@@ -4041,7 +4088,7 @@ CREATE TABLE IF NOT EXISTS `trattamenti` (
 -- Struttura della tabella `turni`
 --
 -- Creazione: Feb 16, 2023 alle 10:15
--- Ultimo aggiornamento: Feb 20, 2023 alle 11:38
+-- Ultimo aggiornamento: Feb 25, 2023 alle 16:17
 --
 
 DROP TABLE IF EXISTS `turni`;
